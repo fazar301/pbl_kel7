@@ -27,4 +27,9 @@ class Layanan extends Model
     {
         return $this->belongsToMany(PaketLayanan::class, 'layanan_paket_layanan');
     }
+
+    public function reservasis()
+    {
+        return $this->hasMany(Reservasi::class);
+    }
 }

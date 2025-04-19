@@ -6,11 +6,12 @@ use App\Http\Controllers\OauthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\LayananController;
+use App\Http\Controllers\HomeController;
 
 
-Route::get('/', function () {
-    return view('front.home');
-});
+Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/dashboard', function () {
     // mencegah user dengan role admin mengakses dashboard customer
@@ -45,5 +46,16 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+// Booking Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/booking/create/{layanan}', [BookingController::class, 'create'])->name('booking.create');
+    Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/booking/{reservasi}', [BookingController::class, 'show'])->name('booking.show');
+    Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+    Route::patch('/booking/{reservasi}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
+});
+
+// Layanan Routes
+Route::get('/layanan/{layanan}', [LayananController::class, 'show'])->name('layanan.show');
 
 require __DIR__.'/auth.php';
